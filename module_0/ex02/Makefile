@@ -6,17 +6,17 @@ SDIR	=	src
 HDIR	=	inc
 ODIR	=	obj
 FLAGS	=	-std=c++98 -Wall -Wextra -Werror -I$(HDIR)
-#VPATH	=	$(SDIR)
+VPATH	=	$(SDIR)
 
-CFILES	:=	$(shell find $(SDIR) -name "*.cpp")
-OFILES	:=	$(patsubst $(SDIR)/%.cpp,$(ODIR)/%.o, $(CFILES))
+CFILES	:=	Accout.cpp tests.cpp
+OFILES	:=	$(patsubst %.cpp,$(ODIR)/%.o, $(CFILES))
 
 all: compiledb $(NAME)
 
 $(ODIR):
 	@mkdir -p $@
 
-$(OFILES): $(ODIR)/%.o: $(SDIR)/%.cpp | $(ODIR)
+$(OFILES): $(ODIR)/%.o: %.cpp | $(ODIR)
 	$(CC) $(FLAGS) -c -o $@ $<
 
 $(NAME): $(OFILES)
