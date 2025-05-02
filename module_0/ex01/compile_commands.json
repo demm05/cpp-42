@@ -1,0 +1,66 @@
+[
+ {
+  "directory": "/home/dmelnyk/common-core/cpp/module_0/ex01",
+  "arguments": [
+   "c++",
+   "-std=c++98",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-Iinc",
+   "-c",
+   "-o",
+   "obj/Contact.class.o",
+   "src/Contact.class.cpp"
+  ],
+  "file": "src/Contact.class.cpp"
+ },
+ {
+  "directory": "/home/dmelnyk/common-core/cpp/module_0/ex01",
+  "arguments": [
+   "c++",
+   "-std=c++98",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-Iinc",
+   "-c",
+   "-o",
+   "obj/main.o",
+   "src/main.cpp"
+  ],
+  "file": "src/main.cpp"
+ },
+ {
+  "directory": "/home/dmelnyk/common-core/cpp/module_0/ex01",
+  "arguments": [
+   "c++",
+   "-std=c++98",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-Iinc",
+   "-c",
+   "-o",
+   "obj/PhoneBook.class.o",
+   "src/PhoneBook.class.cpp"
+  ],
+  "file": "src/PhoneBook.class.cpp"
+ },
+ {
+  "directory": "/home/dmelnyk/common-core/cpp/module_0/ex01",
+  "arguments": [
+   "c++",
+   "-std=c++98",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-Iinc",
+   "-c",
+   "-o",
+   "obj/utils.o",
+   "src/utils.cpp"
+  ],
+  "file": "src/utils.cpp"
+ }
+]

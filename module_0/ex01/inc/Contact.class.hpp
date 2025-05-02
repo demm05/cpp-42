@@ -1,7 +1,5 @@
 #include <string>
 
-using namespace std;
-
 class Contact {
 public:
     Contact(void);
@@ -10,9 +8,9 @@ public:
     void print(int const index) const;
 
 private:
-    string first_name;
-    string last_name;
-    string nick_name;
-    string phone_number;
-    string darkers_secret;
+    std::string first_name;
+    std::string last_name;
+    std::string nick_name;
+    std::string phone_number;
+    std::string darkers_secret;
 };

@@ -4,8 +4,6 @@
 #include "Contact.class.hpp"
 #include "utils.hpp"
 
-using namespace std;
-
 Contact::Contact(void) {
 }
 
@@ -21,16 +19,16 @@ void Contact::set_contact(void) {
 }
 
 void print_truncated(int const &index) {
-    cout << "|";
-    cout << setw(10) << index;
+    std::cout << "|";
+    std::cout << std::setw(10) << index;
 }
 
-void print_truncated(string const &src) {
-    cout << "|";
+void print_truncated(std::string const &src) {
+    std::cout << "|";
     if (src.length() > 10)
-        cout << src.substr(0, 9) << '.';
+        std::cout << src.substr(0, 9) << '.';
     else
-        cout << setw(10) << src;
+        std::cout << std::setw(10) << src;
 }
 
 void Contact::print(int const index) const {
@@ -38,5 +36,5 @@ void Contact::print(int const index) const {
     print_truncated(this->first_name);
     print_truncated(this->last_name);
     print_truncated(this->nick_name);
-    cout << '|' << endl;
+    std::cout << '|' << std::endl;
 }

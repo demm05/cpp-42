@@ -2,15 +2,13 @@
 #include <string>
 #include <iostream>
 
-using namespace std;
-
-void read_input(const char *message, string &dest) {
+void read_input(const char *message, std::string &dest) {
     if (!message)
         return;
     while (1) {
-        cout << "Enter " << message << ": ";
-        if (!getline(cin, dest)) {
-            cout << endl << "^D was pressed, exitining" << endl;
+        std::cout << "Enter " << message << ": ";
+        if (!getline(std::cin, dest)) {
+            std::cout << std::endl << "^D was pressed, exitining" << std::endl;
             exit(1);
         }
         if (!dest.empty())
