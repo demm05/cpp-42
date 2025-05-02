@@ -4,20 +4,19 @@ CC		=	c++
 SDIR	=	src
 HDIR	=	inc
 ODIR	=	obj
-#FLAGS	=	-std=c++98 -Wall -Wextra -Werror -I$(HDIR)
-FLAGS	=	-std=c++98 -Wall -Wextra -I$(HDIR)
-FLAGS	+=	-DDEBUG=1
-#VPATH	=	$(SDIR)
+FLAGS	=	-std=c++98 -Wall -Wextra -Werror -I$(HDIR)
 
-CFILES	:=	$(shell find $(SDIR) -name "*.cpp")
-OFILES	:=	$(patsubst $(SDIR)/%.cpp,$(ODIR)/%.o, $(CFILES))
+VPATH	=	$(SDIR)
+
+CFILES	:=	Contact.class.cpp main.cpp PhoneBook.class.cpp utils.cpp
+OFILES	:=	$(patsubst %.cpp,$(ODIR)/%.o, $(CFILES))
 
 all: compiledb $(NAME)
 
 $(ODIR):
 	@mkdir -p $@
 
-$(OFILES): $(ODIR)/%.o: $(SDIR)/%.cpp | $(ODIR)
+$(OFILES): $(ODIR)/%.o: %.cpp | $(ODIR)
 	$(CC) $(FLAGS) -c -o $@ $<
 
 $(NAME): $(OFILES)
