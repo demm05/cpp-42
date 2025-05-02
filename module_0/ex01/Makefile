@@ -1,22 +1,23 @@
-NAME	=	megaphone
+NAME	=	phonebook
 CC		=	c++
-
 
 SDIR	=	src
 HDIR	=	inc
 ODIR	=	obj
-FLAGS	=	-std=c++98 -Wall -Wextra -Werror -I$(HDIR)
-VPATH	=	$(SDIR)
+#FLAGS	=	-std=c++98 -Wall -Wextra -Werror -I$(HDIR)
+FLAGS	=	-std=c++98 -Wall -Wextra -I$(HDIR)
+FLAGS	+=	-DDEBUG=1
+#VPATH	=	$(SDIR)
 
 CFILES	:=	$(shell find $(SDIR) -name "*.cpp")
-OFILES	:=	$(patsubst %.cpp,$(ODIR)/%.o, $(CFILES))
+OFILES	:=	$(patsubst $(SDIR)/%.cpp,$(ODIR)/%.o, $(CFILES))
 
-all: $(NAME)
+all: compiledb $(NAME)
 
 $(ODIR):
 	@mkdir -p $@
 
-$(OFILES): $(ODIR)/%.o: %.cpp | $(ODIR)
+$(OFILES): $(ODIR)/%.o: $(SDIR)/%.cpp | $(ODIR)
 	$(CC) $(FLAGS) -c -o $@ $<
 
 $(NAME): $(OFILES)
