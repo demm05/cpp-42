@@ -4,6 +4,7 @@ AllowShortBlocksOnASingleLine: Never
 AllowShortCaseLabelsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: InlineOnly
 AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
 AlignConsecutiveDeclarations: true
 AlignEscapedNewlinesLeft: true
 IndentWidth: 4
