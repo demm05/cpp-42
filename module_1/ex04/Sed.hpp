@@ -4,11 +4,17 @@ class Sed {
 public:
     Sed(void);
     ~Sed(void);
+    bool open(std::string const &filename);
+    void replace(char const *targetString, char const *newString);
 
 private:
-    std::fstream _fin;
-    std::fstream _fout;
-    std::string  _name;
+    std::ifstream _fin;
+    std::ofstream _fout;
+    std::string   _targetString;
+    std::string   _newString;
+    std::string   _buffer;
 
-    bool static checkFileRight(std::string filename);
+    void replaceWithNewLine(void);
+    void replaceBasic(void);
+    void replaceBuffer(void);
 };

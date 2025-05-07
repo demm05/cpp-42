@@ -8,20 +8,14 @@
 // end of filename
 int main(int argc, char *argv[]) {
     Sed sed;
-
     if (argc < 4) {
         std::cout << argv[0]
                   << ": requires 3 arguments to run: filename, str1, str2"
                   << std::endl;
         return (1);
     }
-    std::fstream fin(argv[0], std::ios::in);
-    if (!fin.good()) {
-        std::cerr << "Error: unable to open file!" << std::endl;
+    if (!sed.open(std::string(argv[1])))
         return (1);
-    }
-    (void)argv;
-    fin.close();
-
+    sed.replace(argv[2], argv[3]);
     return 0;
 }

@@ -3,7 +3,7 @@ CC		=	c++
 
 HDIR	=	inc
 ODIR	=	obj
-FLAGS	=	-std=c++98 -Wall -Wextra -Werror -I$(HDIR)
+FLAGS	=	-g -std=c++98 -Wall -Wextra -Werror -I$(HDIR)
 
 CFILES	:=	$(shell find . -name "*.cpp")
 OFILES	:=	$(patsubst %.cpp,$(ODIR)/%.o, $(CFILES))
