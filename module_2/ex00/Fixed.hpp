@@ -3,7 +3,7 @@ public:
     Fixed(void);
     Fixed(Fixed const &old);
     ~Fixed(void);
-    void operator=(Fixed const &rhs);
+    Fixed &operator=(Fixed const &rhs);
 
     int getRawBits(void) const;
     void setRawBits(int const raw);
