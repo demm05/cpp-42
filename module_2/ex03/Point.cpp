@@ -9,11 +9,6 @@ Point::Point(Point const &rhs) : m_X(rhs.getX()), m_Y(rhs.getY()) {}
 
 Point::~Point(void) {}
 
-std::ostream &operator<<(std::ostream &o, Point const &rhs) {
-    std::cout << "x: " << std::setfill(' ') << std::setw(3) << rhs.getX()
-              << "\ty: " << std::setw(3) << rhs.getY();
-    return o;
-}
 Point const &Point::operator=(Point const &rhs) const { return rhs; }
 
 Fixed const &Point::getX(void) const { return this->m_X; }
@@ -28,7 +23,18 @@ bool Point::s_checkIfTriangleIsValid(const Point &a, const Point &b,
     return (area != 0);
 }
 
-Fixed Point::s_getSign(Point const &p, Point const &a, Point const &b) {
-    return (p.getX() - b.getX()) * (a.getY() - b.getY()) -
-           (a.getX() - b.getX()) * (p.getY() - b.getY());
+Fixed Point::s_getCrossProduct(Point const &p, Point const &a, Point const &b) {
+    Fixed temp = (p.getX() - b.getX()) * (a.getY() - b.getY()) -
+                 (a.getX() - b.getX()) * (p.getY() - b.getY());
+#ifdef DEBUG
+    std::cout << "The cross product of point is: "
+              << ((temp < 0) ? "left" : "right") << std::endl;
+#endif
+    return (temp);
+}
+
+std::ostream &operator<<(std::ostream &o, Point const &rhs) {
+    std::cout << "x: " << std::setfill(' ') << std::setw(3) << rhs.getX()
+              << "\ty: " << std::setw(3) << rhs.getY();
+    return o;
 }

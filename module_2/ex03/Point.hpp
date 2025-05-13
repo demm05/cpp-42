@@ -5,19 +5,22 @@
 class Point {
 public:
     Point(void);
+    ~Point();
     Point(float const x, float const y);
     Point(Point const &rhs);
-    ~Point();
 
     Point const &operator=(Point const &rhs) const;
 
     Fixed const &getX(void) const;
     Fixed const &getY(void) const;
 
-    static Fixed s_getSign(Point const &p, Point const &p1, Point const &p2);
+    Fixed static s_getCrossProduct(Point const &p, Point const &p1,
+                                   Point const &p2);
+
     bool static s_checkIfTriangleIsValid(Point const &a, Point const &b,
                                          Point const &c);
-    static bool s_bsp(Point const &a, Point const &b, Point const &c,
+
+    bool static s_bsp(Point const &a, Point const &b, Point const &c,
                       Point const &point);
 
 private:

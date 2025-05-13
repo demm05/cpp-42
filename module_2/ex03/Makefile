@@ -22,8 +22,9 @@ $(NAME): $(OFILES)
 r: all
 	@./$(NAME)
 
-v: all
-	@valgrind ./$(NAME)
+d: re r
+
+d: FLAGS += -DDEBUG=1
 
 compiledb:
 	@compiledb make -n all > /dev/null 2>&1
@@ -36,4 +37,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean re compiledb
+.PHONY: all clean re compiledb d
