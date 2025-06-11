@@ -1,4 +1,4 @@
-NAME	=	scav	
+NAME	=	clap
 CC		=	c++
 
 HDIR	=	inc
@@ -8,7 +8,7 @@ FLAGS	=	-std=c++98 -Wall -Wextra -Werror -I$(HDIR)
 
 VPATH 	=	$(SDIR)
 
-CFILES	:=	ClapTrap.cpp ScavTrap.cpp main.cpp
+CFILES	:=	ClapTrap.cpp ScavTrap.cpp FragTrap.cpp main.cpp
 OFILES	:=	$(patsubst %.cpp,$(ODIR)/%.o, $(CFILES))
 
 all: $(NAME)
