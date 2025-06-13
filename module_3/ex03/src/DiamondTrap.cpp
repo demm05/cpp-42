@@ -1,43 +1,47 @@
 #include "DiamondTrap.hpp"
 #include <iostream>
 
-DiamondTrap::DiamondTrap(void) : ScavTrap(), FragTrap(), m_Name("NoDiamond") {
+DiamondTrap::DiamondTrap(void) : ClapTrap(), m_Name("NoDiamond") {
     std::cout << "DiamondTrap " << m_Name << ": Default Constructor called"
               << std::endl;
+    m_HitPoints = FragTrap::m_HitPoints;
+    m_EnergyPoints = ScavTrap::m_EnergyPoints;
+    m_AttackDamage = FragTrap::m_AttackDamage;
 }
 
-DiamondTrap::DiamondTrap(std::string name) : ScavTrap(name), FragTrap(name) {
-    m_Name = name;
+DiamondTrap::DiamondTrap(std::string name)
+    : ClapTrap(name + "_clap_name"), m_Name(name) {
     std::cout << "DiamondTrap " << m_Name << ": Name constructor called"
               << std::endl;
+    m_HitPoints = FragTrap::m_HitPoints;
+    m_EnergyPoints = ScavTrap::m_EnergyPoints;
+    m_AttackDamage = FragTrap::m_AttackDamage;
+}
+
+DiamondTrap::DiamondTrap(DiamondTrap const &rhs)
+    : ClapTrap(rhs), ScavTrap(rhs), FragTrap(rhs) {
+    std::cout << "DiamondTrap copy constructor" << std::endl;
+    m_Name = rhs.m_Name;
 }
 
 DiamondTrap::~DiamondTrap(void) {
     std::cout << "DiamondTrap " << m_Name << ": Deconstructed" << std::endl;
 }
 
-DiamondTrap::DiamondTrap(DiamondTrap const &rhs)
-    : ScavTrap(rhs.m_Name), FragTrap(rhs.m_Name) {
-}
-
 DiamondTrap const &DiamondTrap::operator=(DiamondTrap const &rhs) {
     std::cout << "DiamondTrap copy assignment operator called" << std::endl;
     if (this != &rhs) {
+        ClapTrap::operator=(rhs);
         ScavTrap::operator=(rhs);
-        FragTrap::operator=(rhs);
         m_Name = rhs.m_Name;
     }
     return *this;
 }
 
 void DiamondTrap::whoAmI(void) {
-    std::cout << "DiamondTrap: I am " << m_Name << std::endl;
-}
-
-std::ostream &operator<<(std::ostream &o, DiamondTrap const &rhs) {
-    std::cout << "> DiamondTrap stats of " << rhs.getName()
-              << ": HP=" << rhs.getHitPoints()
-              << ", EP=" << rhs.getEnergyPoints()
-              << ", AD=" << rhs.getAttackDamage();
-    return o;
+    std::cout << "DiamondTrap: I am " << m_Name
+              << " and I'm derived from ClapTrap class: " << ClapTrap::m_Name
+              << "; My stats are: " << "HP=" << m_HitPoints
+              << ", EP=" << m_EnergyPoints << ", AD=" << m_AttackDamage
+              << ", IG=" << isGuardingGate() << std::endl;
 }

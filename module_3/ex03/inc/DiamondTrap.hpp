@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ScavTrap.hpp"
 #include "FragTrap.hpp"
+#include "ScavTrap.hpp"
 
 class DiamondTrap : public ScavTrap, public FragTrap {
 public:
@@ -17,3 +17,5 @@ public:
 private:
     std::string m_Name;
 };
+
+std::ostream &operator<<(std::ostream &o, DiamondTrap const &rhs);

@@ -3,16 +3,16 @@
 
 ClapTrap::ClapTrap(void)
     : m_HitPoints(10), m_EnergyPoints(10), m_AttackDamage(0), m_Name("NoName") {
-    std::cout << m_Name << " ClapTrap: Default Constructor called" << std::endl;
+    std::cout << "ClapTrap: " << m_Name << ": Default Constructor called" << std::endl;
 }
 
 ClapTrap::ClapTrap(std::string name)
     : m_HitPoints(10), m_EnergyPoints(10), m_AttackDamage(0), m_Name(name) {
-    std::cout << m_Name << " ClapTrap constructed" << std::endl;
+    std::cout << "ClapTrap " << m_Name << ": constructed" << std::endl;
 }
 
 ClapTrap::~ClapTrap(void) {
-    std::cout << m_Name << " ClapTrap deconstructed" << std::endl;
+    std::cout << "ClapTrap " << m_Name << ": deconstructed" << std::endl;
 }
 
 ClapTrap::ClapTrap(ClapTrap const &rhs)
