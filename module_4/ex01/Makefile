@@ -1,4 +1,4 @@
-NAME	=	animal
+NAME	=	brain
 CC		=	c++
 
 HDIR	=	inc
@@ -8,7 +8,7 @@ FLAGS	=	-std=c++98 -Wall -Wextra -Werror -I$(HDIR) -Wno-shadow -Wshadow
 
 VPATH 	=	$(SDIR)
 
-CFILES	:=	Animal.cpp WrongAnimal.cpp Cat.cpp WrongCat.cpp Dog.cpp main.cpp
+CFILES	:=	Animal.cpp WrongAnimal.cpp Cat.cpp WrongCat.cpp Dog.cpp main.cpp Brain.cpp
 OFILES	:=	$(patsubst %.cpp,$(ODIR)/%.o, $(CFILES))
 
 all: $(NAME)
