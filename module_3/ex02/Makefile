@@ -1,4 +1,4 @@
-NAME	=	clap
+NAME	=	frag
 CC		=	c++
 
 HDIR	=	inc

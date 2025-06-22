@@ -21,19 +21,14 @@ FragTrap::~FragTrap(void) {
     std::cout << "FragTrap " << m_Name << ": Deconstructed" << std::endl;
 }
 
-FragTrap::FragTrap(FragTrap const &rhs) : ClapTrap(rhs.m_Name) {
-    m_HitPoints = rhs.m_HitPoints;
-    m_EnergyPoints = rhs.m_EnergyPoints;
-    m_AttackDamage = rhs.m_AttackDamage;
+FragTrap::FragTrap(FragTrap const &rhs) : ClapTrap(rhs) {
+    std::cout << "FragTrap " << m_Name << ": Copy constructor called" << std::endl;
 }
 
 FragTrap const &FragTrap::operator=(FragTrap const &rhs) {
     std::cout << "FragTrap copy assignment operator called" << std::endl;
     if (this != &rhs) {
-        m_HitPoints = rhs.m_HitPoints;
-        m_EnergyPoints = rhs.m_EnergyPoints;
-        m_AttackDamage = rhs.m_AttackDamage;
-        m_Name = rhs.m_Name;
+        ClapTrap::operator=(rhs);
     }
     return *this;
 }

@@ -6,7 +6,8 @@ ScavTrap::ScavTrap(void) : ClapTrap() {
     m_EnergyPoints = 50;
     m_AttackDamage = 20;
     m_IsGuardingGate = 0;
-    std::cout << "ScavTrap " << m_Name << ": Default Constructor called" << std::endl;
+    std::cout << "ScavTrap " << m_Name << ": Default Constructor called"
+              << std::endl;
 }
 
 ScavTrap::ScavTrap(std::string name) : ClapTrap(name) {
@@ -14,28 +15,24 @@ ScavTrap::ScavTrap(std::string name) : ClapTrap(name) {
     m_EnergyPoints = 50;
     m_AttackDamage = 20;
     m_IsGuardingGate = 0;
-    std::cout << "ScavTrap " << m_Name << ": Constructed" << std::endl;
+    std::cout << "ScavTrap " << m_Name << ": Name constructor called"
+              << std::endl;
 }
 
 ScavTrap::~ScavTrap(void) {
     std::cout << "ScavTrap " << m_Name << ": Deconstructed" << std::endl;
 }
 
-ScavTrap::ScavTrap(ScavTrap const &rhs) : ClapTrap(rhs.m_Name) {
-    m_HitPoints = rhs.m_HitPoints;
-    m_EnergyPoints = rhs.m_EnergyPoints;
-    m_AttackDamage = rhs.m_AttackDamage;
+ScavTrap::ScavTrap(ScavTrap const &rhs) : ClapTrap(rhs) {
     m_IsGuardingGate = rhs.m_IsGuardingGate;
+    std::cout << "ScavTrap " << m_Name << ": Copy constructor called" << std::endl;
 }
 
 ScavTrap const &ScavTrap::operator=(ScavTrap const &rhs) {
     std::cout << "ScavTrap copy assignment operator called" << std::endl;
     if (this != &rhs) {
-        m_HitPoints = rhs.m_HitPoints;
-        m_EnergyPoints = rhs.m_EnergyPoints;
-        m_AttackDamage = rhs.m_AttackDamage;
+        ClapTrap::operator=(rhs);
         m_IsGuardingGate = rhs.m_IsGuardingGate;
-        m_Name = rhs.m_Name;
     }
     return *this;
 }

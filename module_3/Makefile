@@ -1,14 +1,11 @@
-NAME	=	diamond
+NAME	=	fixedp
 CC		=	c++
 
 HDIR	=	inc
 ODIR	=	obj
-SDIR	=	src
-FLAGS	=	-std=c++98 -Wall -Wextra -Werror -I$(HDIR) -Wno-shadow -Wshadow
+FLAGS	=	-std=c++98 -Wall -Wextra -Werror -I$(HDIR)
 
-VPATH 	=	$(SDIR)
-
-CFILES	:=	ClapTrap.cpp ScavTrap.cpp FragTrap.cpp DiamondTrap.cpp main.cpp
+CFILES	:=	Fixed.cpp main.cpp
 OFILES	:=	$(patsubst %.cpp,$(ODIR)/%.o, $(CFILES))
 
 all: $(NAME)

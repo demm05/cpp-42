@@ -4,18 +4,24 @@
 DiamondTrap::DiamondTrap(void) : ClapTrap(), m_Name("NoDiamond") {
     std::cout << "DiamondTrap " << m_Name << ": Default Constructor called"
               << std::endl;
-    m_HitPoints = FragTrap::m_HitPoints;
-    m_EnergyPoints = ScavTrap::m_EnergyPoints;
-    m_AttackDamage = FragTrap::m_AttackDamage;
+    // m_EnergyPoints = ScavTrap::m_EnergyPoints;
+    // m_HitPoints = FragTrap::m_HitPoints;
+    // m_AttackDamage = FragTrap::m_AttackDamage;
+    m_HitPoints = 100; 
+    m_EnergyPoints = 50;
+    m_AttackDamage = 30;
 }
 
 DiamondTrap::DiamondTrap(std::string name)
-    : ClapTrap(name + "_clap_name"), m_Name(name) {
+    : ClapTrap(name + "_clap_name"),ScavTrap(name), FragTrap(name), m_Name(name) {
     std::cout << "DiamondTrap " << m_Name << ": Name constructor called"
               << std::endl;
-    m_HitPoints = FragTrap::m_HitPoints;
-    m_EnergyPoints = ScavTrap::m_EnergyPoints;
-    m_AttackDamage = FragTrap::m_AttackDamage;
+    // m_EnergyPoints = ScavTrap::m_EnergyPoints;
+    // m_HitPoints = FragTrap::m_HitPoints;
+    // m_AttackDamage = FragTrap::m_AttackDamage;
+    m_HitPoints = 100; 
+    m_EnergyPoints = 50;
+    m_AttackDamage = 30;
 }
 
 DiamondTrap::DiamondTrap(DiamondTrap const &rhs)

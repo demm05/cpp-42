@@ -3,12 +3,12 @@
 
 ClapTrap::ClapTrap(void)
     : m_HitPoints(10), m_EnergyPoints(10), m_AttackDamage(0), m_Name("NoName") {
-    std::cout << "ClapTrap: " << m_Name << ": Default Constructor called" << std::endl;
+    std::cout << "Claptrap: " << m_Name << ": default constructor called" << std::endl;
 }
 
 ClapTrap::ClapTrap(std::string name)
     : m_HitPoints(10), m_EnergyPoints(10), m_AttackDamage(0), m_Name(name) {
-    std::cout << "ClapTrap " << m_Name << ": constructed" << std::endl;
+    std::cout << "ClapTrap " << m_Name << ": Name constructor called" << std::endl;
 }
 
 ClapTrap::~ClapTrap(void) {
@@ -17,7 +17,9 @@ ClapTrap::~ClapTrap(void) {
 
 ClapTrap::ClapTrap(ClapTrap const &rhs)
     : m_HitPoints(rhs.m_HitPoints), m_EnergyPoints(rhs.m_EnergyPoints),
-      m_AttackDamage(rhs.m_AttackDamage), m_Name(rhs.m_Name) {}
+      m_AttackDamage(rhs.m_AttackDamage), m_Name(rhs.m_Name) {
+    std::cout << "ClapTrap " << m_Name << ": Copy constructor called" << std::endl;
+}
 
 ClapTrap const &ClapTrap::operator=(ClapTrap const &rhs) {
     std::cout << "ClapTrap copy assignment operator called" << std::endl;
