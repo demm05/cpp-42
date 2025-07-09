@@ -1,0 +1,34 @@
+[
+ {
+  "directory": "/home/dmelnyk/Projects/42/cpp-42/module_5/ex00",
+  "arguments": [
+   "c++",
+   "-std=c++98",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-Iinc",
+   "-c",
+   "-o",
+   "obj/main.o",
+   "src/main.cpp"
+  ],
+  "file": "src/main.cpp"
+ },
+ {
+  "directory": "/home/dmelnyk/Projects/42/cpp-42/module_5/ex00",
+  "arguments": [
+   "c++",
+   "-std=c++98",
+   "-Wall",
+   "-Wextra",
+   "-Werror",
+   "-Iinc",
+   "-c",
+   "-o",
+   "obj/Bureaucrat.o",
+   "src/Bureaucrat.cpp"
+  ],
+  "file": "src/Bureaucrat.cpp"
+ }
+]
