@@ -8,7 +8,9 @@ FLAGS	=	-std=c++98 -Wall -Wextra -Werror -I$(HDIR)
 
 VPATH 	=	$(SDIR)
 
-CFILES	:=	main.cpp Bureaucrat.cpp Form.cpp 
+CFILES	:=	main.cpp Bureaucrat.cpp AForm.cpp \
+			ShrubberyCreationForm.cpp RobotomyRequestForm.cpp \
+			PresidentialPardonForm.cpp
 OFILES	:=	$(patsubst %.cpp,$(ODIR)/%.o, $(CFILES))
 
 all: $(NAME)

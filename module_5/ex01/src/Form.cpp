@@ -18,7 +18,8 @@ Form::Form(Form const &rhs)
 Form::~Form() throw() {}
 
 Form const &Form::operator=(Form const &rhs) {
-    (void)rhs;
+    if (this != &rhs)
+        mIsSigned = rhs.mIsSigned;
     return *this;
 }
 
@@ -27,7 +28,9 @@ int Form::getGradeToSign(void) const { return mGradeToSign; }
 int Form::getGradeToExecute(void) const { return mGradeToExecute; }
 bool Form::isSigned(void) const { return mIsSigned; }
 
-void Form::beSigned(Bureaucrat const &b) throw(GradeTooLowException) {
+void Form::beSigned(Bureaucrat const &b) throw(GradeTooLowException, FormException) {
+    if (mIsSigned)
+        throw FormException("Form [" + mName + "] is already signed");
     if (b.getGrade() > mGradeToSign)
         throw GradeTooLowException();
     mIsSigned = 1;
@@ -40,6 +43,10 @@ char const *Form::GradeTooLowException::what(void) const throw() {
 char const *Form::GradeTooHighException::what(void) const throw() {
     return "Grade is too high!";
 }
+
+Form::FormException::FormException(std::string const &message): mMessage(message) {}
+Form::FormException::~FormException(void) throw() {}
+char const *Form::FormException::what(void) const throw() { return mMessage.c_str(); }
 
 std::ostream &operator<<(std::ostream &o, Form const &f) {
     o << "Form " << f.getName()
