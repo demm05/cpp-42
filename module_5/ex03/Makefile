@@ -1,4 +1,4 @@
-NAME	=	shrubbery
+NAME	=	intern
 CC		=	c++
 
 HDIR	=	inc
@@ -10,7 +10,7 @@ VPATH 	=	$(SDIR)
 
 CFILES	:=	main.cpp Bureaucrat.cpp AForm.cpp \
 			ShrubberyCreationForm.cpp RobotomyRequestForm.cpp \
-			PresidentialPardonForm.cpp
+			PresidentialPardonForm.cpp Intern.cpp
 OFILES	:=	$(patsubst %.cpp,$(ODIR)/%.o, $(CFILES))
 
 all: $(NAME)
