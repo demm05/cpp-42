@@ -35,7 +35,7 @@ public:
         char const *what(void) const throw();
     };
 
-    class GradeTooLowException {
+    class GradeTooLowException : public std::exception {
     public:
         char const *what(void) const throw();
     };

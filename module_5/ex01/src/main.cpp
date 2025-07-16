@@ -102,5 +102,20 @@ int main(void) {
         std::cerr << "Caught unexpected exception: " << e.what() << std::endl;
     }
 
+    print_header("Test 6: Bureaucrat tries to sign an already signed form");
+    try {
+        Bureaucrat signer("Hermes", 30);
+        Form tax_form("Tax Form 1040", 50, 40);
+
+        tax_form.beSigned(signer);
+        std::cout << "Form is now signed: " << tax_form << std::endl;
+
+        std::cout << "\nHermes attempts to sign the form again..." << std::endl;
+        tax_form.beSigned(signer); // This should now throw an exception
+
+    } catch (std::exception &e) {
+        std::cerr << "Caught expected exception: " << e.what() << std::endl;
+    }
+
     return 0;
 }

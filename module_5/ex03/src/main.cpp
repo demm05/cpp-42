@@ -1,27 +1,50 @@
 #include "Bureaucrat.hpp"
-#include "ShrubberyCreationForm.hpp"
-#include "RobotomyRequestForm.hpp"
 #include "Intern.hpp"
+#include "AForm.hpp"
+#include <iostream>
 #include <cstdlib>
+#include <ctime>
 
-void    set_unique_seed(void)
-{
-    int dummy_for_seeding;
-    unsigned int seed = static_cast<unsigned int>(time(0));
-    seed ^= reinterpret_cast<unsigned long>(&dummy_for_seeding);
-    srand(seed);
+void print_header(const std::string& title) {
+    std::cout << "\n--- " << title << " ---\n" << std::endl;
 }
 
-int main(int argc, char **argv) {
-    set_unique_seed();
+int main(void) {
+    Intern      someRandomIntern;
+    Bureaucrat  boss("The Boss", 1);
+    AForm* form;
 
-    Intern someRandomIntern;
-    AForm* rrf;
+    print_header("Test 1: Intern creates Shrubbery Creation Form");
+    form = someRandomIntern.makeForm("shrubbery creation", "home");
+    if (form) {
+        boss.signForm(*form);
+        boss.executeForm(*form);
+        delete form;
+    }
 
-    if (argc == 2)
-        rrf = someRandomIntern.makeForm(argv[1], "Bender");
-    else
-        rrf = someRandomIntern.makeForm("robotomy request", "Bender");
+    print_header("Test 2: Intern creates Robotomy Request Form");
+    form = someRandomIntern.makeForm("robotomy request", "Bender");
+    if (form) {
+        boss.signForm(*form);
+        boss.executeForm(*form);
+        delete form;
+    }
+
+    print_header("Test 3: Intern creates Presidential Pardon Form");
+    form = someRandomIntern.makeForm("presidential pardon", "Ford Prefect");
+    if (form) {
+        boss.signForm(*form);
+        boss.executeForm(*form);
+        delete form;
+    }
+
+    print_header("Test 4: Intern fails to create a non-existent form");
+    form = someRandomIntern.makeForm("request for a holiday", "Me");
+    if (form) {
+        // This block should not be reached
+        std::cerr << "Test failed: Form should have been NULL." << std::endl;
+        delete form;
+    }
 
     return 0;
 }
