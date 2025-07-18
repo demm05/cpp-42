@@ -1,0 +1,106 @@
+#include "ScalarConverter.hpp"
+#include <cctype>
+#include <cerrno>
+#include <cstdlib>
+#include <limits>
+
+static inline void put_char(long c) {
+    std::cout << "char:\t";
+    if (c < 1 || c > 127)
+        std::cout << "Impossible";
+    else if (std::isprint(c))
+        std::cout << "\'" << static_cast<char>(c) << "\'";
+    else
+        std::cout << "Non displayable";
+    std::cout << std::endl;
+}
+
+static inline void put_int(long n) {
+    std::cout << "int: \t";
+    if (n < std::numeric_limits<int>::min() ||
+        n > std::numeric_limits<int>::max())
+        std::cout << "Impossible";
+    else
+        std::cout << static_cast<int>(n);
+    std::cout << std::endl;
+}
+
+void ScalarConverter::convert(std::string const &s) {
+    static bool (*convert_scalar[])(std::string const &) = {&convertChar,
+                                                            &convertInt};
+    static size_t size = sizeof(convert_scalar) / sizeof(convert_scalar[0]);
+
+    for (size_t i = 0; i < size; i++) {
+        if (convert_scalar[i](s))
+            return;
+    }
+}
+
+bool ScalarConverter::convertChar(std::string const &s) {
+    char c;
+    if (s.length() == 1 && !isdigit(s[0]))
+        c = s[0];
+    else if (s.length() == 3 && s[0] == '\'' && s[2] == '\'')
+        c = s[1];
+    else
+        return 0;
+    put_char(c);
+    put_int(c);
+    std::cout << "float:\t" << static_cast<float>(c) << ".0f" << std::endl;
+    std::cout << "double:\t" << static_cast<double>(c) << ".0" << std::endl;
+    return 1;
+}
+
+bool ScalarConverter::convertInt(std::string const &s) {
+    char *pend = NULL;
+
+    errno = 0;
+    const char *cstr = s.c_str();
+    long n = std::strtol(cstr, &pend, 10);
+    if (pend == cstr || (*pend && !isspace(*pend)))
+        return 0;
+    put_char(n);
+    put_int(n);
+    std::cout << "float:\t";
+    if (errno == ERANGE || n < std::numeric_limits<float>::min() ||
+        n > std::numeric_limits<float>::max())
+        std::cout << "Impossible";
+    else
+        std::cout << static_cast<float>(n) << ".0f";
+    std::cout << std::endl;
+    std::cout << "double:\t";
+    if (errno == ERANGE || n < std::numeric_limits<double>::min() ||
+        n > std::numeric_limits<double>::max())
+        std::cout << "Impossible";
+    else
+        std::cout << static_cast<double>(n) << ".0";
+    std::cout << std::endl;
+    return 1;
+}
+
+bool ScalarConverter::convertFloat(std::string const &s) {
+    char *pend = NULL;
+
+    errno = 0;
+    const char *cstr = s.c_str();
+    double n = std::strtod(cstr, &pend);
+    if (pend == cstr || *pend != 'f' || !isspace(*pend + 1))
+        return 0;
+    put_char(static_cast<long>(n));
+    put_int(static_cast<long>(n));
+    std::cout << "float:\t";
+    if (errno == ERANGE || n < std::numeric_limits<float>::min() ||
+        n > std::numeric_limits<float>::max())
+        std::cout << "Impossible";
+    else
+        std::cout << static_cast<float>(n) << "f";
+    std::cout << std::endl;
+    std::cout << "double:\t";
+    if (errno == ERANGE || n < std::numeric_limits<double>::min() ||
+        n > std::numeric_limits<double>::max())
+        std::cout << "Impossible";
+    else
+        std::cout << static_cast<double>(n);
+    std::cout << std::endl;
+    return 1;
+}
