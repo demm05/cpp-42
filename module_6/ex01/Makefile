@@ -1,4 +1,4 @@
-NAME	=	convert
+NAME	=	serializer
 CC		=	c++
 
 HDIR	=	inc
@@ -8,10 +8,10 @@ FLAGS	=	-std=c++98 -Wall -Wextra -Werror -I$(HDIR)
 
 VPATH 	=	$(SDIR)
 
-CFILES	:=	main.cpp ScalarConverter.cpp
+CFILES	:=	main.cpp Serializer.cpp
 OFILES	:=	$(patsubst %.cpp,$(ODIR)/%.o, $(CFILES))
 
-all: $(NAME)
+all: compiledb $(NAME)
 
 $(ODIR):
 	@mkdir -p $@
