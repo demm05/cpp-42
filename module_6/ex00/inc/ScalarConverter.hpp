@@ -15,7 +15,7 @@ private:
     static void printFloat(double);
     static void printDouble(double);
 
-    static bool getChar(std::string const &s, double *d);
+    static bool tryParseChar(std::string const &s, double *d);
 
 public:
     static void convert(std::string const &);

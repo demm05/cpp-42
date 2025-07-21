@@ -11,7 +11,7 @@ VPATH 	=	$(SDIR)
 CFILES	:=	main.cpp Base.cpp
 OFILES	:=	$(patsubst %.cpp,$(ODIR)/%.o, $(CFILES))
 
-all: compiledb $(NAME)
+all: $(NAME)
 
 $(ODIR):
 	@mkdir -p $@

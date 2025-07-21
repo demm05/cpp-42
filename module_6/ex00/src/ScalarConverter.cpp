@@ -19,7 +19,7 @@ void ScalarConverter::convert(std::string const &s) {
     char *pend = NULL;
     double res = 0;
 
-    if (!getChar(s, &res)) {
+    if (!tryParseChar(s, &res)) {
         res = std::strtod(cstr, &pend);
         if ((*pend && (*pend != 'f' || *(pend + 1))) || errno == ERANGE) {
             std::cout << "char: impossible" << std::endl;
@@ -92,7 +92,7 @@ void ScalarConverter::printDouble(double d) {
     std::cout << std::endl;
 }
 
-bool ScalarConverter::getChar(std::string const &s, double *d) {
+bool ScalarConverter::tryParseChar(std::string const &s, double *d) {
     if (!d)
         return 0;
     if (s.length() == 1 && !isdigit(s[0]))
