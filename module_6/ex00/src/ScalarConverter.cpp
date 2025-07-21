@@ -62,7 +62,7 @@ void ScalarConverter::printFloat(double d) {
     std::cout << "float: ";
     if (std::isnan(d) || std::isinf(d))
         std::cout << d << "f";
-    else if (d < std::numeric_limits<float>::min() ||
+    else if (d < -std::numeric_limits<float>::min() ||
              d > std::numeric_limits<float>::max())
         std::cout << "impossible";
     else {
