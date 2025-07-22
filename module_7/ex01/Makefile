@@ -1,4 +1,4 @@
-NAME	=	convert
+NAME	=	iter
 CC		=	c++
 
 HDIR	=	inc
@@ -11,7 +11,7 @@ VPATH 	=	$(SDIR)
 CFILES	:=	main.cpp
 OFILES	:=	$(patsubst %.cpp,$(ODIR)/%.o, $(CFILES))
 
-all: compiledb $(NAME)
+all: $(NAME)
 
 $(ODIR):
 	@mkdir -p $@
