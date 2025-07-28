@@ -1,10 +1,10 @@
-NAME	=	easyfind
+NAME	=	mutantStack
 CC		=	c++
 
 HDIR	=	inc
 ODIR	=	obj
 SDIR	=	src
-FLAGS	=	-std=c++98 -Wall -Wextra -Werror -I$(HDIR) -g3
+FLAGS	=	-std=c++98 -Wall -Wextra -Werror -I$(HDIR)
 
 VPATH 	=	$(SDIR)
 
