@@ -8,7 +8,7 @@ FLAGS	=	-std=c++98 -Wall -Wextra -Werror -I$(HDIR)
 
 VPATH 	=	$(SDIR)
 
-CFILES	:=	main.cpp
+CFILES	:=	BitcoinExchange.cpp main.cpp primitive.cpp string.cpp TimeStamp.cpp CSV.cpp
 OFILES	:=	$(patsubst %.cpp,$(ODIR)/%.o, $(CFILES))
 
 all: $(NAME)
