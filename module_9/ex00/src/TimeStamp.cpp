@@ -9,7 +9,7 @@ time_t TimeStamp::get(std::string const &time, char sep) {
     time_t t = mktime(&dt);
     if (t == -1 || dt.tm_year != copy.tm_year || dt.tm_mon != copy.tm_mon ||
         dt.tm_mday != copy.tm_mday) {
-        std::runtime_error("Invalid date: '" + time + "'");
+        throw std::runtime_error("Invalid date: '" + time + "'");
     }
     return mktime(&dt);
 }
