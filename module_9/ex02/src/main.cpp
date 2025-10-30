@@ -121,6 +121,39 @@ template <typename T> void merge_insert_sort(std::vector<T> &items) {
     size_t jacoNumber = getJacoNum(jacoIndex);
     size_t insertionsToNextJaco = 0;
 
+#if 0
+
+
+    /* WORKFLOW:
+
+    Once we inserted from cJacoNumber to pJacoNumber we update jacoIndex and c/pJacoNumbers
+    We have to keep track of inserted elements for the current jaco index
+
+
+    */
+
+    size_t insertionIndex = 0;
+    size_t currentJacoIndex = 1;
+    size_t currentJacoNumber = getJacoNum(currentJacoIndex);
+    size_t insertionsLeftForTheCurrentJaco = 0;
+    size_t insertionsToBeDoneForTheCurJaco = sth;
+
+
+    size_t pJacoNumber = 1;
+    size_t cJacoNumber = 1;
+
+
+
+    while (!pend.empty()) {
+        if (insertionsLeftForTheCurrentJaco = 0) {
+            currentJacoIndex++;
+            currentJacoNumber = getJacoNum(currentJacoIndex);
+
+        }
+        insertionIndex++;
+    }
+#endif
+
     while (pend.size() > 1) {
 
         // Update jaco index
@@ -141,7 +174,8 @@ template <typename T> void merge_insert_sort(std::vector<T> &items) {
 
         size_t index = jacoNumber - insertion - 1;
         T elToInsert = pend[index];
-        std::cout << "Inserting: " << elToInsert << std::endl;
+        std::cout << "Inserting: b(" << jacoNumber - index << ") " << elToInsert
+                  << std::endl;
         pairs.insert(binaryInsert(start, end, elToInsert), elToInsert);
         pend.erase(pend.begin() + index);
         insertion++;
@@ -155,12 +189,12 @@ template <typename T> void merge_insert_sort(std::vector<T> &items) {
     depth--;
 }
 
-int main(int argc, char const **argv) {
-    auto res = processInput<int>(argc, argv);
-    std::cout << res.size() << std::endl;
-    merge_insert_sort(res);
-    for (size_t i = 0; i < res.size(); i++) {
-        std::cout << res[i] << " ";
-    }
-    std::cout << std::endl;
-}
+// int main(int argc, char const **argv) {
+//     auto res = processInput<int>(argc, argv);
+//     std::cout << res.size() << std::endl;
+//     merge_insert_sort(res);
+//     for (size_t i = 0; i < res.size(); i++) {
+//         std::cout << res[i] << " ";
+//     }
+//     std::cout << std::endl;
+// }
