@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cmath>
 #include <cstring>
 #include <iostream>
@@ -13,6 +14,26 @@ template <typename T> struct PmergeMe {
     std::vector<T> &items;
     std::vector<T> pairs;
     std::vector<T> pend;
+
+    size_t findIndexToInsert(std::vector<T> &v, T target,
+                             size_t boundPosition) {
+        size_t left = 0, right = boundPosition;
+        while (left <= right && right < v.size()) {
+            size_t mid = (right + left) / 2;
+            if (target > v[mid])
+                left = mid + 1;
+            else if (target < v[mid])
+                right = mid - 1;
+            else
+                return mid;
+        }
+        if (left == v.size())
+            return left;
+        else if (v[left] > target)
+            return left;
+        else
+            return left + 1;
+    }
 
     PmergeMe(std::vector<T> &items) : items(items) {
         pairs.reserve(items.size() / 2);
@@ -41,38 +62,74 @@ template <typename T> struct PmergeMe {
         return pend.size() > 1;
     }
 
+    void doBinaryInsertion(size_t pendIndex, size_t boundPosition) {
+        // std::cout << "at index (" << pendIndex << ") " << pend[pendIndex];
+        boundPosition = std::min(boundPosition, pairs.size());
+        size_t i = findIndexToInsert(pairs, pendIndex, boundPosition);
+        // std::cout << " at the position: " << i << " and between: (0)";
+        // if (i > 0) {
+        //     std::cout << pairs[i - 1] << ", ";
+        // }
+        // std::cout << pend[pendIndex];
+        // if (i < pairs.size())
+        //     std::cout << ", " << pairs[i];
+        // std::cout << "(" << boundPosition << ")" << std::endl;
+        pairs.insert(pairs.begin(), pend[pendIndex]);
+    }
+
     // clang-format off
     // Q: When jaco index is being increased?
     // A: When we inserted cJacoNumber - pJaconumber elements
     //      3 - 1 = 2 elements to insert once they were we update it (b3 and b2)
     // clang-format on
     void doInsertion() {
-        size_t totalInsertions = 1;
-        size_t jacoIndex = 1;
-        size_t cJacoNumber = getJacoNum(jacoIndex);
-        size_t pJacoNumber = getJacoNum(jacoIndex - 1);
-        size_t countOfInsertedElementForTheCurrentJacoIndex = 0;
-        while (totalInsertions < pend.size()) {
-            if (pJacoNumber + countOfInsertedElementForTheCurrentJacoIndex >=
-                cJacoNumber) {
+        size_t seed = 1;
+        size_t cJacoNumber = getJacoNum(seed);
+        size_t pJacoNumber = getJacoNum(seed - 1);
+        size_t insertions = 0;
+        size_t totalInsertions = 0;
+        while (totalInsertions < pend.size() - 1) {
+            if (pJacoNumber + insertions >= cJacoNumber) {
                 pJacoNumber = cJacoNumber;
-                cJacoNumber = getJacoNum(++jacoIndex);
-                countOfInsertedElementForTheCurrentJacoIndex = 0;
+                cJacoNumber = getJacoNum(++seed);
+                // if (cJacoNumber > pend.size())
+                //     insertions = pend.size() - cJacoNumber;
+                insertions = 0;
+                continue;
             }
-            size_t index =
-                cJacoNumber - countOfInsertedElementForTheCurrentJacoIndex - 1;
-            std::cout << "Inserting b("
-                      << cJacoNumber -
-                             countOfInsertedElementForTheCurrentJacoIndex
-                      << ") at index (" << index << ") " << pend[index]
+            size_t bx = cJacoNumber - insertions - 1;
+            std::cout << "inserting b" << bx << "(" << pend[bx] << ")"
                       << std::endl;
-            size_t correspoindingIndex = 0;
-            std::cout << "Corresopoinding index is: " << correspoindingIndex
-                      << std::endl;
-            pairs.insert(pairs.begin(), pend[index]);
-            countOfInsertedElementForTheCurrentJacoIndex++;
+            size_t axPos = 1 << seed;
+            doBinaryInsertion(bx, axPos);
+            insertions++;
             totalInsertions++;
         }
+        // size_t totalInsertions = 1;
+        // size_t jacoIndex = 1;
+        // size_t cJacoNumber = getJacoNum(jacoIndex);
+        // size_t pJacoNumber = getJacoNum(jacoIndex - 1);
+        // size_t countOfInsertedElementForTheCurrentJacoIndex = 0;
+        // while (totalInsertions < pend.size()) {
+        //     if (pJacoNumber + countOfInsertedElementForTheCurrentJacoIndex >=
+        //         cJacoNumber) {
+        //         pJacoNumber = cJacoNumber;
+        //         cJacoNumber = getJacoNum(++jacoIndex);
+        //         countOfInsertedElementForTheCurrentJacoIndex = 0;
+        //     }
+        //     size_t index =
+        //         cJacoNumber - countOfInsertedElementForTheCurrentJacoIndex -
+        //         1;
+        //     std::cout << "Inserting b("
+        //               << cJacoNumber -
+        //                      countOfInsertedElementForTheCurrentJacoIndex
+        //               << ") ";
+        //     size_t boundPosition = 1 << jacoIndex;
+        //     doBinaryInsertion(index, boundPosition);
+        //     // pairs.insert(pairs.begin(), pend[index]);
+        //     countOfInsertedElementForTheCurrentJacoIndex++;
+        //     totalInsertions++;
+        // }
     }
 };
 
@@ -88,8 +145,18 @@ template <typename T> void merge_insert_sort(std::vector<T> &items) {
     PmergeMe<T> pm(items);
     pm.saveStraggler();
     pm.doPairing();
+    std::cout << depth << "before: main: ";
+    for (size_t i = 0; i < pm.pairs.size(); i++) {
+        std::cout << pm.pairs[i] << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "pend: ";
+    for (size_t i = 0; i < pm.pend.size(); i++) {
+        std::cout << pm.pend[i] << " ";
+    }
+    std::cout << std::endl;
     merge_insert_sort(pm.pairs);
-    std::cout << "main: ";
+    std::cout << depth << "after: main: ";
     for (size_t i = 0; i < pm.pairs.size(); i++) {
         std::cout << pm.pairs[i] << " ";
     }
