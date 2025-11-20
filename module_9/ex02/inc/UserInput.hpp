@@ -30,13 +30,6 @@ Container processInput(int argc, char const **argv) {
         if (res.empty())
             continue;
     }
-#if DEBUG
-    std::cout << res.front();
-    for (size_t j = 1; j < res.size(); j++) {
-        std::cout << ", " << res[i];
-    }
-    std::cout << std::endl;
-#endif
     return res;
 }
 

@@ -1,8 +1,21 @@
 #pragma once
 
+#include "UserInput.hpp"
 #include <cmath>
 #include <stdexcept>
 #include <vector>
+
+#ifdef DEBUG
+#define DEBUG_PRINT(expr)                                                      \
+    do {                                                                       \
+        (expr);                                                                \
+    } while (0)
+#else
+#define DEBUG_PRINT(expr)                                                      \
+    do {                                                                       \
+        (void)0;                                                               \
+    } while (0)
+#endif
 
 template <typename Container> class PmergeMe {
 public:
@@ -26,17 +39,16 @@ public:
         while (maxPairSize > 0) {
             doMergeInserrtion(maxPairSize);
             maxPairSize /= 2;
+            DEBUG_PRINT(std::cout << std::endl);
         }
         return swapCount_;
     }
-
-    size_t comparisons() const { return swapCount_; }
 
 private:
     std::vector<size_t> makeInsertionsOrder(size_t pair_size) {
         std::vector<size_t> res;
 
-        size_t const pairs = pend_.size() / pair_size - 1;
+        size_t const pairs = pend_.size() / pair_size;
         if (pairs == 0)
             return res;
         res.reserve(pairs);
@@ -45,12 +57,12 @@ private:
         while (i < pairs) {
             size_t jacoNum = getJacoNum(seed);
             size_t pJacoNum = getJacoNum(seed - 1);
-            if (jacoNum > pairs + 1)
-                jacoNum = pairs;
+            if (jacoNum > pairs)
+                jacoNum = pairs + 1;
             if (jacoNum <= pJacoNum)
                 break;
             for (; jacoNum > pJacoNum; jacoNum--) {
-                res.push_back(jacoNum - 1);
+                res.push_back(jacoNum - 2);
                 i++;
             }
             seed++;
@@ -60,10 +72,22 @@ private:
 
     void doMergeInserrtion(size_t pair_size) {
         size_t const totalPairs = cnt_.size() / pair_size;
+        DEBUG_PRINT(std::cout << "doMergeInserrtion(" << pair_size
+                              << "):" << totalPairs << std::endl);
         if (totalPairs <= 2)
             return;
         initializeMainPend(pair_size);
+        size_t const pendPairs = pend_.size() / pair_size;
         std::vector<size_t> insertPairOrder = makeInsertionsOrder(pair_size);
+        {
+            std::cout << "Inserting order: ";
+            for (std::vector<size_t>::const_iterator it =
+                     insertPairOrder.begin();
+                 it != insertPairOrder.end(); ++it) {
+                std::cout << *it << " ";
+            }
+            std::cout << std::endl;
+        }
         size_t seed = 1;
         for (std::vector<size_t>::const_iterator it = insertPairOrder.begin();
              it != insertPairOrder.end(); ++it) {
@@ -77,15 +101,45 @@ private:
             size_t idx =
                 getInsertPairIndex(getValueOfPair(pend_, *it, pair_size),
                                    pair_size, rangeInsertion);
+#if DEBUG
+            {
+                std::cout << "Inserting " << idx << " pair ( ";
+                iterator it = pair_begin;
+                while (it != pair_end) {
+                    std::cout << *it << " ";
+                    ++it;
+                }
+                std::cout << ")" << std::endl;
+            }
+#endif
             iterator pos = main_.begin();
             std::advance(pos, idx * pair_size);
             main_.insert(pos, pair_begin, pair_end);
         }
-        if ((totalPairs / 2) * pair_size < pend_.size()) {
+        if (pendPairs * pair_size < pend_.size()) {
             iterator pos = pend_.begin();
-            std::advance(pos, (totalPairs / 2) * pair_size);
+            std::advance(pos, pendPairs * pair_size);
             main_.insert(main_.end(), pos, pend_.end());
+#if DEBUG
+            {
+                std::cout << pendPairs << " " << pair_size
+                          << " Putting remainder into main: ";
+                while (pos != pend_.end()) {
+                    std::cout << *pos << " ";
+                    pos++;
+                }
+                std::cout << std::endl;
+            };
+#endif
         }
+#if DEBUG
+        std::cout << "main: ";
+        printContainer(main_);
+#endif
+        if (cnt_.size() != main_.size()) {
+            std::cout << "ERRORORROROROOROROOOROR" << std::endl;
+        }
+        cnt_ = main_;
     }
 
     size_t getInsertPairIndex(value_type const &value, size_t pair_size,
@@ -133,6 +187,12 @@ private:
         }
         if (it != cnt_.end())
             pend_.insert(pend_.end(), it, cnt_.end());
+#if DEBUG
+        std::cout << "initialized main: ";
+        printContainer(main_);
+        std::cout << "initialized pend: ";
+        printContainer(pend_);
+#endif
     }
 
     size_t makePairs(size_t pair_size = 1) {
