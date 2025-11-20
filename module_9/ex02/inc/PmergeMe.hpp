@@ -1,8 +1,10 @@
 #pragma once
 
 #include "UserInput.hpp"
+#include <algorithm>
 #include <cmath>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
 #ifdef DEBUG
@@ -45,10 +47,9 @@ public:
     }
 
 private:
-    std::vector<size_t> makeInsertionsOrder(size_t pair_size) {
+    std::vector<size_t> makeInsertionsOrder(size_t pairs) {
         std::vector<size_t> res;
 
-        size_t const pairs = pend_.size() / pair_size;
         if (pairs == 0)
             return res;
         res.reserve(pairs);
@@ -72,74 +73,48 @@ private:
 
     void doMergeInserrtion(size_t pair_size) {
         size_t const totalPairs = cnt_.size() / pair_size;
-        DEBUG_PRINT(std::cout << "doMergeInserrtion(" << pair_size
-                              << "):" << totalPairs << std::endl);
         if (totalPairs <= 2)
             return;
         initializeMainPend(pair_size);
         size_t const pendPairs = pend_.size() / pair_size;
-        std::vector<size_t> insertPairOrder = makeInsertionsOrder(pair_size);
-        {
-            std::cout << "Inserting order: ";
-            for (std::vector<size_t>::const_iterator it =
-                     insertPairOrder.begin();
-                 it != insertPairOrder.end(); ++it) {
-                std::cout << *it << " ";
-            }
-            std::cout << std::endl;
-        }
-        size_t seed = 1;
-        for (std::vector<size_t>::const_iterator it = insertPairOrder.begin();
-             it != insertPairOrder.end(); ++it) {
-            size_t rangeInsertion = std::min((1ul << seed) - 1, totalPairs / 2);
+        size_t const mainPairs = main_.size() / pair_size;
+        movePendMainToCnt(pair_size);
+        // This may work
+        // iterator pend_begin = main_.end();
+        iterator pend_begin = cnt_.begin();
+        std::advance(pend_begin, mainPairs * pair_size);
+        DEBUG_PRINT(std::cout << "Advanced by: " << mainPairs * pair_size
+                              << " and begins on: " << *pend_begin
+                              << std::endl);
+        for (size_t i = 0; i < pendPairs; i++) {
+            DEBUG_PRINT(std::cout << i << "; ");
+            DEBUG_PRINT(std::cout << "pbegin: " << *pend_begin << "; ");
+            size_t end = mainPairs + i;
+            DEBUG_PRINT(std::cout << "end: " << end << "; ");
+            iterator pend_end = pend_begin;
+            std::advance(pend_end, pair_size);
 
-            iterator pair_begin = pend_.begin();
-            std::advance(pair_begin, *it * pair_size);
-            iterator pair_end = pair_begin;
-            std::advance(pair_end, pair_size);
+            --pend_end;
+            value_type const &v = *pend_end;
+            ++pend_end;
 
-            size_t idx =
-                getInsertPairIndex(getValueOfPair(pend_, *it, pair_size),
-                                   pair_size, rangeInsertion);
-#if DEBUG
-            {
-                std::cout << "Inserting " << idx << " pair ( ";
-                iterator it = pair_begin;
-                while (it != pair_end) {
-                    std::cout << *it << " ";
-                    ++it;
-                }
-                std::cout << ")" << std::endl;
-            }
-#endif
-            iterator pos = main_.begin();
-            std::advance(pos, idx * pair_size);
-            main_.insert(pos, pair_begin, pair_end);
+            DEBUG_PRINT(std::cout << "inserting: " << v << "; ");
+
+            size_t idx = getInsertPairIndex(v, pair_size, end);
+
+            DEBUG_PRINT(std::cout << "idx: " << idx << "; ");
+
+            DEBUG_PRINT(std::cout << "into: "
+                                  << getValueOfPair(cnt_, idx, pair_size));
+
+            iterator where_to_insert = cnt_.begin();
+            std::advance(where_to_insert, idx * pair_size);
+
+            std::rotate(where_to_insert, pend_begin, pend_end);
+
+            pend_begin = pend_end;
+            DEBUG_PRINT(std::cout << std::endl);
         }
-        if (pendPairs * pair_size < pend_.size()) {
-            iterator pos = pend_.begin();
-            std::advance(pos, pendPairs * pair_size);
-            main_.insert(main_.end(), pos, pend_.end());
-#if DEBUG
-            {
-                std::cout << pendPairs << " " << pair_size
-                          << " Putting remainder into main: ";
-                while (pos != pend_.end()) {
-                    std::cout << *pos << " ";
-                    pos++;
-                }
-                std::cout << std::endl;
-            };
-#endif
-        }
-#if DEBUG
-        std::cout << "main: ";
-        printContainer(main_);
-#endif
-        if (cnt_.size() != main_.size()) {
-            std::cout << "ERRORORROROROOROROOOROR" << std::endl;
-        }
-        cnt_ = main_;
     }
 
     size_t getInsertPairIndex(value_type const &value, size_t pair_size,
@@ -149,7 +124,7 @@ private:
         while (left < right) {
             size_t mid = left + (right - left) / 2;
             swapCount_++;
-            if (value < getValueOfPair(main_, mid, pair_size))
+            if (value < getValueOfPair(cnt_, mid, pair_size))
                 right = mid;
             else
                 left = mid + 1;
@@ -161,7 +136,8 @@ private:
                                      size_t pair_size) const {
         size_t target_index = (pair + 1) * pair_size - 1;
         if (target_index >= c.size()) {
-            throw std::out_of_range("Pair index is out of range");
+            throw std::out_of_range("Pair index is out of range" +
+                                    std::to_string(target_index));
         }
         const_iterator it = c.begin();
         std::advance(it, target_index);
@@ -192,6 +168,41 @@ private:
         printContainer(main_);
         std::cout << "initialized pend: ";
         printContainer(pend_);
+#endif
+    }
+
+    void movePendMainToCnt(size_t pair_size) {
+        cnt_.clear();
+        cnt_.insert(cnt_.begin(), main_.begin(), main_.end());
+        size_t const pendPairs = pend_.size() / pair_size;
+        std::vector<size_t> insertPairOrder = makeInsertionsOrder(pendPairs);
+#if DEBUG
+        {
+            std::cout << "Inserting order: ";
+            for (std::vector<size_t>::const_iterator it =
+                     insertPairOrder.begin();
+                 it != insertPairOrder.end(); ++it) {
+                std::cout << *it << " ";
+            }
+            std::cout << std::endl;
+        }
+#endif
+        for (std::vector<size_t>::const_iterator it = insertPairOrder.begin();
+             it != insertPairOrder.end(); ++it) {
+            iterator pair_begin = pend_.begin();
+            std::advance(pair_begin, *it * pair_size);
+            iterator pair_end = pair_begin;
+            std::advance(pair_end, pair_size);
+            cnt_.insert(cnt_.end(), pair_begin, pair_end);
+        }
+        if (pendPairs * pair_size < pend_.size()) {
+            iterator pos = pend_.begin();
+            std::advance(pos, pendPairs * pair_size);
+            cnt_.insert(cnt_.end(), pos, pend_.end());
+        }
+#if DEBUG
+        std::cout << "Current cnt_ state: ";
+        printContainer(cnt_);
 #endif
     }
 

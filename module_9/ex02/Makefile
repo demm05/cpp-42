@@ -4,7 +4,7 @@ CC		=	c++
 HDIR	=	inc
 ODIR	=	obj
 SDIR	=	src
-FLAGS	=	-Wall -Wextra -I$(HDIR) -g3 -O0 -DDEBUG
+FLAGS	=	-Wall -Wextra -I$(HDIR) -g3 -O0 
 
 VPATH 	=	$(SDIR)
 
