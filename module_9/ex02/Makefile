@@ -8,7 +8,7 @@ FLAGS	=	-Wall -Wextra -I$(HDIR) -g3 -O0
 
 VPATH 	=	$(SDIR)
 
-CFILES	:=	main.cpp UserInput.cpp
+CFILES	:=	main.cpp
 OFILES	:=	$(patsubst %.cpp,$(ODIR)/%.o, $(CFILES))
 DEPS	:=	$(patsubst %.o,%.d,$(OFILES))
 
@@ -23,7 +23,7 @@ $(OFILES): $(ODIR)/%.o: %.cpp | $(ODIR)
 $(NAME): $(OFILES)
 	$(CC) $(FLAGS) $^ -o $@
 
-r: all
+r run: all
 	@./$(NAME)
 
 v: all

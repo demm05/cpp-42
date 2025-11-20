@@ -1,14 +1,15 @@
 #pragma once
 
-#include <vector>
-#include <sstream>
-#include "PmergeMe.hpp"
+#define PRINT_LIMIT_NUMBERS 5
 
-template <typename T>
-void processArgument(char const *arg, std::vector<T> &res) {
+#include <iostream>
+#include <sstream>
+
+template <typename Container>
+void processArgument(char const *arg, Container &res) {
     std::istringstream ss(arg);
 
-    T temp;
+    typename Container::value_type temp;
     while (!ss.eof() && (ss >> temp)) {
 #if !ALLOW_NEGATIVE
         if (temp < 0)
@@ -21,10 +22,9 @@ void processArgument(char const *arg, std::vector<T> &res) {
     }
 }
 
-template <typename T>
-std::vector<T> processInput(int argc, char const **argv) {
-    std::vector<int> res;
-    res.reserve(argc - 1);
+template <typename Container>
+Container processInput(int argc, char const **argv) {
+    Container res;
     for (int i = 1; i < argc; i++) {
         processArgument(argv[i], res);
         if (res.empty())
@@ -38,4 +38,46 @@ std::vector<T> processInput(int argc, char const **argv) {
     std::cout << std::endl;
 #endif
     return res;
+}
+
+template <typename Container> void printContainer(Container const &c) {
+    if (c.empty())
+        return;
+    typename Container::const_iterator it = c.begin();
+    typename Container::const_iterator end = c.end();
+
+    while (it != end) {
+        std::cout << *it << " ";
+        it++;
+    }
+    std::cout << std::endl;
+}
+
+template <typename Container>
+void printContainer(Container const &c, size_t sideSizeLimit) {
+    if (c.empty())
+        return;
+    typename Container::const_iterator it = c.begin();
+    typename Container::const_iterator end = c.end();
+
+    if (c.size() < sideSizeLimit * 2) {
+        printContainer(c);
+    }
+
+    size_t i = 0;
+    while (i < sideSizeLimit && it != end) {
+        std::cout << *it << " ";
+        ++it;
+        i++;
+    }
+    std::cout << "... ";
+    i = 0;
+    it = end;
+    std::advance(it, -PRINT_LIMIT_NUMBERS);
+    while (i < sideSizeLimit && it != end) {
+        std::cout << *it << " ";
+        ++it;
+        i++;
+    }
+    std::cout << std::endl;
 }
