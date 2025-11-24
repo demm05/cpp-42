@@ -33,7 +33,8 @@ Container processInput(int argc, char const **argv) {
     return res;
 }
 
-template <typename Container> void printContainer(Container const &c) {
+template <typename Container>
+void printContainer(Container const &c) {
     if (c.empty())
         return;
     typename Container::const_iterator it = c.begin();
@@ -50,12 +51,13 @@ template <typename Container>
 void printContainer(Container const &c, size_t sideSizeLimit) {
     if (c.empty())
         return;
-    typename Container::const_iterator it = c.begin();
-    typename Container::const_iterator end = c.end();
-
     if (c.size() < sideSizeLimit * 2) {
         printContainer(c);
+        return;
     }
+
+    typename Container::const_iterator it = c.begin();
+    typename Container::const_iterator end = c.end();
 
     size_t i = 0;
     while (i < sideSizeLimit && it != end) {

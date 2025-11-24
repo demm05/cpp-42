@@ -1,13 +1,10 @@
 #pragma once
 
-#include "UserInput.hpp"
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
-#include <string>
-#include <vector>
 #include <iostream>
-#include <iomanip>
+#include <vector>
 
 // Define DEBUG to enable verbose logging
 // #define DEBUG 1
@@ -28,61 +25,24 @@ public:
     typedef typename Container::value_type     value_type;
 
 public:
-    PmergeMe(Container &cnt) : cnt_(cnt), comparisons_(0) {}
-
     static size_t sort(Container &cnt) {
         PmergeMe pm(cnt);
-        pm.sort();
+        pm.doSorting();
         return pm.comparisons_;
     }
 
-    size_t sort() {
-        // Start recursion
-        size_t maxPairSize = makePairs();
-
-        // Unwind recursion
-        while (maxPairSize > 0) {
-            if (cnt_.size() / maxPairSize > 2) {
-                DEBUG_PRINT(std::cout
-                            << "\n========================================\n");
-                DEBUG_PRINT(std::cout << " PHASE: Merge-Insertion (Pair Size: "
-                                      << maxPairSize << ")\n");
-                DEBUG_PRINT(std::cout
-                            << "========================================\n");
-
-                initializeMainPend(maxPairSize);
-                movePendMainToCnt(maxPairSize);
-                doMergeInserrtion(maxPairSize);
-            }
-            maxPairSize /= 2;
-        }
-        return comparisons_;
-    }
-
 private:
-    // Helper to print specific ranges for debugging
-    void printRange(const Container &c, size_t start_pair_idx,
-                    size_t end_pair_idx, size_t pair_size) const {
-        const_iterator it = c.begin();
-        std::advance(it, start_pair_idx * pair_size);
-
-        std::cout << "{ ";
-        for (size_t i = start_pair_idx; i <= end_pair_idx && it != c.end();
-             ++i) {
-            std::cout << "[";
-            // Print the value used for comparison (the last element in the pair)
-            value_type val = getValueOfPair(c, i, pair_size);
-            std::cout << val;
-            std::cout << "] ";
-            std::advance(it, pair_size);
-        }
-        std::cout << "}";
+    void doSorting(size_t pair_size = 1) {
+        if (cnt_.size() < pair_size * 2)
+            return;
+        makePairs(pair_size);
+        doSorting(pair_size * 2);
+        initializeMainPend(pair_size);
+        movePendMainToCnt(pair_size);
+        doMergeInserrtion(pair_size);
     }
 
-    size_t makePairs(size_t pair_size = 1) {
-        if (cnt_.size() < pair_size * 2)
-            return pair_size / 2;
-
+    void makePairs(size_t pair_size) {
         size_t const comparisons = cnt_.size() / (pair_size * 2);
 
         DEBUG_PRINT(std::cout << "Recursion: Pairing elements with pair_size "
@@ -104,16 +64,11 @@ private:
 
             comparisons_++;
 
-            // Swap if left > right to ensure largest elements are at pair_size
-            // intervals
             if (*left_pair_end > *right_pair_end) {
-                // DEBUG_PRINT(std::cout << "  > Swap pair " << i << ": " <<
-                // *left_pair_end << " > " << *right_pair_end << "\n");
                 std::swap_ranges(it, right_start, right_start);
             }
             it = next_pair_start;
         }
-        return makePairs(pair_size * 2);
     }
 
     void initializeMainPend(size_t pair_size) {
@@ -122,24 +77,21 @@ private:
         size_t const totalPairs = cnt_.size() / pair_size;
         iterator     it = cnt_.begin();
         pendPairs_ = 0;
+        mainPairs_ = 0;
 
         for (size_t pair = 0; pair < totalPairs; pair++) {
             iterator pair_end = it;
             std::advance(pair_end, pair_size);
 
-            // a1, b1, a2, b2...
-            // In Ford-Johnson: b elements go to Pend, a elements go to Main.
-            // Note: The specific indexing logic here (pair % 2) assumes a
-            // specific layout from makePairs.
             if (pair % 2 || pair == 0) {
                 main_.insert(main_.end(), it, pair_end);
+                mainPairs_++;
             } else {
                 pend_.insert(pend_.end(), it, pair_end);
                 pendPairs_++;
             }
             it = pair_end;
         }
-        // Handle stragglers
         if (it != cnt_.end())
             pend_.insert(pend_.end(), it, cnt_.end());
 
@@ -152,12 +104,9 @@ private:
 
     void movePendMainToCnt(size_t pair_size) {
         cnt_.clear();
-        // Move 'Main' (a) chain back to container first, as they are already
-        // sorted relative to each other
         cnt_.insert(cnt_.begin(), main_.begin(), main_.end());
 
-        size_t const        pendPairs = pend_.size() / pair_size;
-        std::vector<size_t> insertPairOrder = makeInsertionsOrder(pendPairs);
+        std::vector<size_t> insertPairOrder = makeInsertionsOrder(pendPairs_);
 
         // Move 'Pend' (b) elements to the BACK of the container to prepare for
         // rotation/insertion
@@ -171,21 +120,16 @@ private:
         }
 
         // Move stragglers
-        if (pendPairs * pair_size < pend_.size()) {
+        if (pendPairs_ * pair_size < pend_.size()) {
             iterator pos = pend_.begin();
-            std::advance(pos, pendPairs * pair_size);
+            std::advance(pos, pendPairs_ * pair_size);
             cnt_.insert(cnt_.end(), pos, pend_.end());
         }
     }
 
     void doMergeInserrtion(size_t pair_size) {
-        // mainPairs is the count of 'a' elements currently in the sorted portion
-        size_t const mainPairs = cnt_.size() / pair_size / 2 + 1;
-
-        // pend_begin points to the start of the 'Pend' elements we just
-        // appended to the end of cnt_
         iterator pend_begin = cnt_.begin();
-        std::advance(pend_begin, mainPairs * pair_size);
+        std::advance(pend_begin, mainPairs_ * pair_size);
 
         size_t seed = 1;
         size_t cJacoNum = getJacoNum(seed);
@@ -201,11 +145,9 @@ private:
                 cJacoNum = getJacoNum(++seed);
             }
 
-            // The 'b' element to insert
             iterator pend_end = pend_begin;
             std::advance(pend_end, pair_size);
 
-            // Get value for comparison (last element of the chunk)
             iterator val_iter = pend_end;
             --val_iter;
             value_type const &val_b = *val_iter;
@@ -214,7 +156,7 @@ private:
             // We can search up to mainPairs + i (since i elements have been
             // added), constrained by Jacobsthal bound (2^seed - 1).
             size_t const search_boundary_idx =
-                std::min(mainPairs + i, (1ul << seed) - 1);
+                std::min(mainPairs_ + i, (1ul << seed) - 1);
 
             DEBUG_PRINT(std::cout << "\n[Step " << i + 1 << "/" << pendPairs_
                                   << "]\n");
@@ -227,7 +169,6 @@ private:
             DEBUG_PRINT(printRange(cnt_, 0, search_boundary_idx, pair_size));
             DEBUG_PRINT(std::cout << "\n");
 
-            // Perform Binary Search
             size_t idx =
                 getInsertPairIndex(val_b, pair_size, search_boundary_idx);
 
@@ -237,19 +178,13 @@ private:
             iterator where_to_insert = cnt_.begin();
             std::advance(where_to_insert, idx * pair_size);
 
-            // Rotate [where_to_insert, pend_begin, pend_end]
-            // This physically moves the 'b' chunk from the end of the array
-            // into 'idx'
             std::rotate(where_to_insert, pend_begin, pend_end);
 
-            // Update pointer: pend_begin has moved because of rotation?
-            // Actually, pend_begin was the start of the chunk we just moved.
-            // Since we rotated, the NEXT chunk to process is now sitting where
-            // the OLD chunk ended.
             pend_begin = pend_end;
         }
     }
 
+private:
     std::vector<size_t> makeInsertionsOrder(size_t pairs) {
         std::vector<size_t> res;
         if (pairs == 0)
@@ -300,6 +235,23 @@ private:
         return left;
     }
 
+    void printRange(const Container &c, size_t start_pair_idx,
+                    size_t end_pair_idx, size_t pair_size) const {
+        const_iterator it = c.begin();
+        std::advance(it, start_pair_idx * pair_size);
+
+        std::cout << "{ ";
+        for (size_t i = start_pair_idx; i <= end_pair_idx && it != c.end();
+             ++i) {
+            std::cout << "[";
+            value_type val = getValueOfPair(c, i, pair_size);
+            std::cout << val;
+            std::cout << "] ";
+            std::advance(it, pair_size);
+        }
+        std::cout << "}";
+    }
+
     value_type const &
     getValueOfPair(Container const &c, size_t pair, size_t pair_size) const {
         size_t target_index = (pair + 1) * pair_size - 1;
@@ -317,8 +269,12 @@ private:
     }
 
 private:
+    PmergeMe(Container &cnt) : cnt_(cnt), comparisons_(0) {}
+
+private:
     Container     &cnt_;
     mutable size_t comparisons_;
     Container      main_, pend_;
     size_t         pendPairs_;
+    size_t         mainPairs_;
 };

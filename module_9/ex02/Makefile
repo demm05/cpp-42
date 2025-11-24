@@ -4,11 +4,11 @@ CC		=	c++
 HDIR	=	inc
 ODIR	=	obj
 SDIR	=	src
-FLAGS	=	-Wall -Wextra -I$(HDIR) -g3 -O0 
+FLAGS	=	-Wall -Wextra -I$(HDIR) -g3 -O0 -DALLOW_NEGATIVE 
 
 VPATH 	=	$(SDIR)
 
-CFILES	:=	main.cpp
+CFILES	:=	main.cpp utils.cpp
 OFILES	:=	$(patsubst %.cpp,$(ODIR)/%.o, $(CFILES))
 DEPS	:=	$(patsubst %.o,%.d,$(OFILES))
 
