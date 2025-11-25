@@ -10,7 +10,7 @@
 #include <string>
 #include <utility>
 
-CSV::CSV() : linePos_(1) {}
+CSV::CSV(ssize_t maxValue) : linePos_(1), maxValue_(maxValue) {}
 
 void CSV::processHeader(std::ifstream &file) {
     if (!std::getline(file, line_) || line_.empty())
@@ -50,6 +50,11 @@ LineProperties CSV::processLine() {
     }
     prop.price = fromString<double>(sprice);
     if (prop.price < 0) {
+        std::cerr << "On line(" << linePos_ << ") '" << sprice
+                  << "' invalid price." << std::endl;
+        return prop;
+    }
+    if (maxValue_ != -1 && prop.price > maxValue_) {
         std::cerr << "On line(" << linePos_ << ") '" << sprice
                   << "' invalid price." << std::endl;
         return prop;

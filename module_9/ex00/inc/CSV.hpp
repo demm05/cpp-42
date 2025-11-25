@@ -17,8 +17,8 @@ struct LineProperties {
 class CSV {
 public:
     template <typename T>
-    static void parseFile(T &container, std::ifstream &file) {
-        CSV inst;
+    static void parseFile(T &container, std::ifstream &file, ssize_t maxValue) {
+        CSV inst(maxValue);
         inst.parse(container, file);
     }
 
@@ -26,8 +26,10 @@ private:
     std::string line_;
     size_t linePos_;
     char sep_;
+    ssize_t maxValue_;
 
-    CSV();
+private:
+    CSV(ssize_t maxValue);
     void processHeader(std::ifstream &file);
     LineProperties processLine();
 

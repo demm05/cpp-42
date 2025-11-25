@@ -1,16 +1,15 @@
 #include "../inc/BitcoinExchange.hpp"
 #include <exception>
 #include <iostream>
-#include <memory>
 
 int main(int argc, char **argv) {
     if (argc != 2) {
         std::cerr << "Provid path to input data as an argument" << std::endl;
         return 1;
     }
-    std::unique_ptr<BitcoinExchange> btc;
+    BitcoinExchange *btc = NULL;
     try {
-        btc.reset(new BitcoinExchange("data.csv"));
+        btc = new BitcoinExchange("data.csv");
     } catch (std::exception const &e) {
         std::cerr << e.what() << std::endl;
         return 2;

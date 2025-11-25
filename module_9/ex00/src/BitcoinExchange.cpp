@@ -10,7 +10,7 @@ BitcoinExchange::BitcoinExchange(std::string const &path_to_data_file) {
     std::ifstream file(path_to_data_file.c_str());
     if (!file.is_open())
         throw std::runtime_error("Could not open '" + path_to_data_file + "'.");
-    CSV::parseFile(data_, file);
+    CSV::parseFile(data_, file, -1);
 };
 
 void BitcoinExchange::process(std::string const &path_to_input) {
@@ -18,7 +18,7 @@ void BitcoinExchange::process(std::string const &path_to_input) {
     if (!file.is_open())
         throw std::runtime_error("Could not open '" + path_to_input + "'.");
     PriceVector entries;
-    CSV::parseFile(entries, file);
+    CSV::parseFile(entries, file, 1000);
     for (PriceVector::const_iterator it = entries.begin(); it != entries.end();
          ++it) {
         processEntry(*it);
