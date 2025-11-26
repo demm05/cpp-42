@@ -2,8 +2,8 @@
 
 #include <algorithm>
 #include <cmath>
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
 #include <vector>
 
 // Define DEBUG to enable verbose logging
@@ -17,18 +17,29 @@
 #endif
 // clang-format on
 
-template <typename Container>
-class PmergeMe {
+template <typename Container> class PmergeMe {
 public:
-    typedef typename Container::iterator       iterator;
+    typedef typename Container::iterator iterator;
     typedef typename Container::const_iterator const_iterator;
-    typedef typename Container::value_type     value_type;
+    typedef typename Container::value_type value_type;
 
 public:
     static size_t sort(Container &cnt) {
         PmergeMe pm(cnt);
         pm.doSorting();
         return pm.comparisons_;
+    }
+
+    static bool isSorted(Container &cnt) {
+        iterator p = cnt.begin();
+        iterator it = p;
+        ++it;
+        for (; it != cnt.end(); ++it) {
+            if (*it < *p)
+                return false;
+            p = it;
+        }
+        return true;
     }
 
 private:
@@ -75,7 +86,7 @@ private:
         main_.clear();
         pend_.clear();
         size_t const totalPairs = cnt_.size() / pair_size;
-        iterator     it = cnt_.begin();
+        iterator it = cnt_.begin();
         pendPairs_ = 0;
         mainPairs_ = 0;
 
@@ -252,12 +263,11 @@ private:
         std::cout << "}";
     }
 
-    value_type const &
-    getValueOfPair(Container const &c, size_t pair, size_t pair_size) const {
+    value_type const &getValueOfPair(Container const &c, size_t pair,
+                                     size_t pair_size) const {
         size_t target_index = (pair + 1) * pair_size - 1;
         if (target_index >= c.size()) {
-            throw std::out_of_range("Pair index is out of range " +
-                                    std::to_string(target_index));
+            throw std::out_of_range("Pair index is out of range");
         }
         const_iterator it = c.begin();
         std::advance(it, target_index);
@@ -272,9 +282,9 @@ private:
     PmergeMe(Container &cnt) : cnt_(cnt), comparisons_(0) {}
 
 private:
-    Container     &cnt_;
+    Container &cnt_;
     mutable size_t comparisons_;
-    Container      main_, pend_;
-    size_t         pendPairs_;
-    size_t         mainPairs_;
+    Container main_, pend_;
+    size_t pendPairs_;
+    size_t mainPairs_;
 };

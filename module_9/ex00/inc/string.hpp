@@ -12,6 +12,8 @@ template <typename T> T fromString(std::string const &str) {
     std::istringstream ss(str);
     T ret;
     ss >> ret;
+    if (ss.fail() || !ss.eof())
+        throw std::runtime_error("Invalid number format: '" + str + "'");
     return ret;
 }
 
